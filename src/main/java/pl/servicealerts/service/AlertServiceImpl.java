@@ -1,15 +1,13 @@
-package pl.goeuropa.servicealerts.service;
+package pl.servicealerts.service;
 
 import com.google.transit.realtime.GtfsRealtime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
-import pl.goeuropa.servicealerts.cache.CacheManager;
-import pl.goeuropa.servicealerts.model.servicealerts.ServiceAlert;
-import pl.goeuropa.servicealerts.utils.AlertBuilderUtil;
+import pl.servicealerts.repository.AlertRepository;
+import pl.servicealerts.model.servicealerts.ServiceAlert;
+import pl.servicealerts.utils.AlertBuilderUtil;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -20,22 +18,20 @@ import java.util.stream.Collectors;
 import static java.time.Instant.now;
 
 @Slf4j
-@EnableScheduling
 @Service
 public class AlertServiceImpl implements AlertService {
 
-    private final CacheManager cacheManager = CacheManager.getInstance();
-
+    private final AlertRepository alertRepository = AlertRepository.getInstance();
 
     @Value("${alert-api.zone}")
-    private String ZONE_ID;
+    private String zoneId;
 
     @Override
     public void createAlert(ServiceAlert newAlert) {
         long time = getDateTimeNow();
         newAlert.setId(String.valueOf(time * 1000));
         newAlert.setCreationTime(time);
-        cacheManager.addToAlertList(newAlert);
+        alertRepository.addToAlertList(newAlert);
         log.info("-- Added new one {}", newAlert);
     }
 
@@ -43,8 +39,8 @@ public class AlertServiceImpl implements AlertService {
     public GtfsRealtime.FeedMessage getAlertsByAgency(String agencyId) throws RuntimeException {
         List<ServiceAlert> unfilteredListOfAlerts;
         List<ServiceAlert> filteredListOfAlerts;
-        if (!cacheManager.getServiceAlertsList().isEmpty()) {
-            unfilteredListOfAlerts = cacheManager.getServiceAlertsList();
+        if (!alertRepository.getServiceAlertsList().isEmpty()) {
+            unfilteredListOfAlerts = alertRepository.getServiceAlertsList();
             filteredListOfAlerts = unfilteredListOfAlerts
                     .stream()
                     .filter(alert -> alert.getAgencyId().equals(agencyId)
@@ -60,7 +56,7 @@ public class AlertServiceImpl implements AlertService {
             if (filteredListOfAlerts.isEmpty())
                 throw new IllegalStateException(String.format("List of alerts is empty for agencyId: %s", agencyId));
 
-            AlertBuilderUtil.fillFeedMessage(feed, filteredListOfAlerts, ZONE_ID);
+            AlertBuilderUtil.fillFeedMessage(feed, filteredListOfAlerts, zoneId);
             log.info("-- Got {} service-alerts for agencyId {} ", filteredListOfAlerts.size(), agencyId);
             return feed.build();
         }
@@ -70,8 +66,8 @@ public class AlertServiceImpl implements AlertService {
     @Override
     public GtfsRealtime.FeedMessage getAlerts() throws RuntimeException {
         List<ServiceAlert> listOfAlerts;
-        if (!cacheManager.getServiceAlertsList().isEmpty()) {
-            listOfAlerts = cacheManager.getServiceAlertsList();
+        if (!alertRepository.getServiceAlertsList().isEmpty()) {
+            listOfAlerts = alertRepository.getServiceAlertsList();
 
             GtfsRealtime.FeedMessage.Builder feed = GtfsRealtime.FeedMessage.newBuilder();
             GtfsRealtime.FeedHeader.Builder header = feed.getHeaderBuilder();
@@ -80,7 +76,7 @@ public class AlertServiceImpl implements AlertService {
             List<ServiceAlert> sortedListOfAlerts = listOfAlerts.stream()
                     .sorted(Comparator.comparingLong(ServiceAlert::getCreationTime))
                     .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
-            AlertBuilderUtil.fillFeedMessage(feed, sortedListOfAlerts, ZONE_ID);
+            AlertBuilderUtil.fillFeedMessage(feed, sortedListOfAlerts, zoneId);
             return feed.build();
         }
         throw new IllegalStateException("List of alerts is empty");
@@ -90,8 +86,8 @@ public class AlertServiceImpl implements AlertService {
     public List<ServiceAlert> getAlertListByAgency(String agencyId) throws RuntimeException {
         List<ServiceAlert> filteredListOfAlerts;
         List<ServiceAlert> unfilteredListOfAlerts;
-        if (!cacheManager.getServiceAlertsList().isEmpty()) {
-            unfilteredListOfAlerts = cacheManager.getServiceAlertsList();
+        if (!alertRepository.getServiceAlertsList().isEmpty()) {
+            unfilteredListOfAlerts = alertRepository.getServiceAlertsList();
             filteredListOfAlerts = unfilteredListOfAlerts
                     .stream()
                     .filter(alert -> alert.getAgencyId().equals(agencyId)
@@ -108,27 +104,27 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public LinkedList<ServiceAlert> getAlertList() throws RuntimeException {
-        if (cacheManager.getServiceAlertsList().isEmpty())
+        if (alertRepository.getServiceAlertsList().isEmpty())
             throw new IllegalStateException("List of alerts is empty");
 
-        log.info("-- Got sorted by creation time : {} service-alerts ", cacheManager.getServiceAlertsList().size());
-        return cacheManager.getServiceAlertsList().stream()
+        log.info("-- Got sorted by creation time : {} service-alerts ", alertRepository.getServiceAlertsList().size());
+        return alertRepository.getServiceAlertsList().stream()
                 .sorted(Comparator.comparingLong(ServiceAlert::getCreationTime))
                 .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
     }
 
     @Override
     public void editAlert(String alertId, ServiceAlert updatedAlert) throws RuntimeException {
-        Optional<ServiceAlert> existingAlert = cacheManager.getServiceAlertsList()
+        Optional<ServiceAlert> existingAlert = alertRepository.getServiceAlertsList()
                 .stream()
                 .filter(alert -> alert.getId().equals(alertId))
                 .findFirst();
         if (existingAlert.isPresent() && updatedAlert.getId().equals(alertId)) {
-            int index = cacheManager.getServiceAlertsList().indexOf(existingAlert.get());
+            int index = alertRepository.getServiceAlertsList().indexOf(existingAlert.get());
             if (index != -1) {
-                cacheManager.getServiceAlertsList().set(index, updatedAlert);
+                alertRepository.getServiceAlertsList().set(index, updatedAlert);
             }
-        if (cacheManager.getServiceAlertsList().contains(updatedAlert)) {
+        if (alertRepository.getServiceAlertsList().contains(updatedAlert)) {
         log.info("-- Alert with id : {} - successfully updated", updatedAlert.getId());
         } else {
             log.error("-- Alert with id : {} - does not exist", updatedAlert.getId());
@@ -142,10 +138,10 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public void deleteAlertById(String id) throws RuntimeException {
-        cacheManager.getServiceAlertsList()
+        alertRepository.getServiceAlertsList()
                 .removeIf(alert -> alert.getId()
                         .equals(id));
-        if (cacheManager.getServiceAlertsList()
+        if (alertRepository.getServiceAlertsList()
                 .stream()
                 .anyMatch(alert -> alert.getId().equals(id))) {
             log.debug("Something get wrong. The alert still is.");
@@ -156,10 +152,10 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public void deleteAlertsByAgency(String id) throws RuntimeException {
-        cacheManager.getServiceAlertsList()
+        alertRepository.getServiceAlertsList()
                 .removeIf(alert -> alert.getAgencyId()
                         .equals(id));
-        if (cacheManager.getServiceAlertsList()
+        if (alertRepository.getServiceAlertsList()
                 .stream()
                 .anyMatch(alert -> alert.getAgencyId().equals(id))) {
             log.debug("Something get wrong. Alerts still are.");
@@ -170,8 +166,8 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public void cleanAlertList() throws RuntimeException {
-        cacheManager.clearServiceAlertsList();
-        if (!cacheManager.getServiceAlertsList().isEmpty()) {
+        alertRepository.cleanServiceAlertsList();
+        if (!alertRepository.getServiceAlertsList().isEmpty()) {
             log.debug("Something get wrong. The alerts still in the list.");
             throw new IllegalStateException("Something get wrong. Please, try again");
         }
@@ -180,7 +176,7 @@ public class AlertServiceImpl implements AlertService {
 
     private long getDateTimeNow () {
         return now()
-                .atZone(ZoneId.of(ZONE_ID))
+                .atZone(ZoneId.of(zoneId))
                 .toEpochSecond();
     }
 }

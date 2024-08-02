@@ -1,4 +1,4 @@
-package pl.goeuropa.servicealerts.controller;
+package pl.servicealerts.controller;
 
 
 import com.google.transit.realtime.GtfsRealtime;
@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import pl.goeuropa.servicealerts.model.servicealerts.ServiceAlert;
-import pl.goeuropa.servicealerts.service.AlertService;
+import pl.servicealerts.service.AlertService;
+import pl.servicealerts.model.servicealerts.ServiceAlert;
 
 import java.util.List;
 

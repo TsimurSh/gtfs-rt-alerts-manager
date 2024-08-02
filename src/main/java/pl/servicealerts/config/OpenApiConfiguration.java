@@ -1,4 +1,4 @@
-package pl.goeuropa.servicealerts.config;
+package pl.servicealerts.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

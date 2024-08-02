@@ -5,8 +5,9 @@ import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.goeuropa.servicealerts.cache.CacheManager;
-import pl.goeuropa.servicealerts.model.servicealerts.ServiceAlert;
+import pl.servicealerts.repository.AlertRepository;
+import pl.servicealerts.model.servicealerts.ServiceAlert;
+import pl.servicealerts.service.AlertService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ class AlertsServiceTests {
     @Autowired
     private AlertService testService;
 
-    private final CacheManager inst = CacheManager.getInstance();
+    private final AlertRepository inst = AlertRepository.getInstance();
 
     private EasyRandom getGenerator() {
         EasyRandomParameters parameters = new EasyRandomParameters()

@@ -1,9 +1,5 @@
 server:
-  port: 8888
-
-#logging:
-#  file:
-#    name: logs/logback.txt
+  port: 8080
 
 management:
   endpoints:

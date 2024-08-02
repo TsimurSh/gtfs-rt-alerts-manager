@@ -1,12 +1,12 @@
 
 services:
   service-alerts:
-    image: wkulesza/service-alerts-server:latest
+    image: timurshyk/service-alerts:latest
     volumes:
       - ./app/resources/alerts.list:/app/resources/alerts.list
       - ./src/main/resources/application.yml:/app/resources/application.yml
     ports:
-      - "8888:8888"
+      - "8888:8080"
     healthcheck:
       test: "curl --fail --silent localhost:8888/actuator/health | grep UP || exit 1"
       interval: 20s

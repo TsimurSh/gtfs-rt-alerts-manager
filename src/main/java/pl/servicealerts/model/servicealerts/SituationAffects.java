@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.goeuropa.servicealerts.model.servicealerts;
+package pl.servicealerts.model.servicealerts;
 
 import lombok.Data;
 
@@ -28,10 +28,7 @@ public final class SituationAffects implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String routeId;
-
     private String tripId;
-
     private String stopId;
-
     private String routeType;
 }

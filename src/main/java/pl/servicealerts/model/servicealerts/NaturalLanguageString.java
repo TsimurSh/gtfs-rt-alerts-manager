@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.goeuropa.servicealerts.model.servicealerts;
+package pl.servicealerts.model.servicealerts;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -31,7 +30,5 @@ public class NaturalLanguageString implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String value;
-    @Size (min = 2, max = 3)
     private String lang;
-
 }

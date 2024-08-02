@@ -1,41 +1,40 @@
-package pl.goeuropa.servicealerts.model.servicealerts;
+package pl.servicealerts.model.servicealerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
-import static java.time.LocalDateTime.now;
 
 @Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class ServiceAlert implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
-    @NotNull
+    @NonNull
     private String agencyId;
     @JsonIgnore
     private long creationTime;
-    @NotNull
+    @NonNull
     private List<TimeRange> activeWindows;
-    @NotNull
+    @NonNull
     private String cause;
-    @NotNull
+    @NonNull
     private String effect;
-    @NotNull
+    @NonNull
     private List<NaturalLanguageString> summaries;
-    @NotNull
+    @NonNull
     private List<NaturalLanguageString> urls;
-    @NotNull
+    @NonNull
     private List<SituationAffects> allAffects;
-    @NotNull
+    @NonNull
     private List<NaturalLanguageString> descriptions;
 }

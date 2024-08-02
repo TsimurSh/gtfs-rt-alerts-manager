@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.goeuropa.servicealerts.model.servicealerts;
+package pl.servicealerts.model.servicealerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,9 +32,9 @@ public class TimeRange implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @NotBlank @NotNull
+    @NonNull
     String from;
-    @NotBlank @NotNull
+    @NonNull
     String to;
 
 

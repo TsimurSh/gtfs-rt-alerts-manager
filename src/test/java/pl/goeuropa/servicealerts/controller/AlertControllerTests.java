@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.goeuropa.servicealerts.model.servicealerts.ServiceAlert;
-import pl.goeuropa.servicealerts.service.AlertService;
+import pl.servicealerts.model.servicealerts.ServiceAlert;
+import pl.servicealerts.service.AlertService;
 
 import java.util.Collections;
 import java.util.LinkedList;
