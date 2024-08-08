@@ -1,4 +1,4 @@
-package pl.goeuropa.servicealerts.controller;
+package pl.servicealerts.controller;
 
 import com.google.transit.realtime.GtfsRealtime;
 import org.jeasy.random.EasyRandom;

@@ -1,4 +1,4 @@
-package pl.goeuropa.servicealerts.service;
+package pl.servicealerts.service;
 
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
