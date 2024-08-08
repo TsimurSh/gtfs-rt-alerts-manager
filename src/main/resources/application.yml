@@ -11,7 +11,7 @@ management:
       enabled: false
 
 alert-api:
-  ## Paths to save/read cache list
+  ## Paths to save/read backup list
   out-path: ./app/resources/alerts.list
   in-path: ./app/resources/alerts.list
   ## Time-Zone

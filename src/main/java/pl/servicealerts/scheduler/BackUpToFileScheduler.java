@@ -36,7 +36,7 @@ public class BackUpToFileScheduler {
     private String outputPath;
 
     @PostConstruct
-    public void getAllAlertsFromFile() {
+    public void getAlertsFromFile() {
         List<ServiceAlert> tempList = null;
         long dateTimeNow = LocalDateTime.now()
                 .atZone(ZoneId.of(zoneId))
@@ -68,7 +68,7 @@ public class BackUpToFileScheduler {
 
     @PreDestroy
     @Scheduled(cron = "@hourly")
-    public void saveAllAlertsToFile() {
+    public void saveAlertsToFile() {
         var serviceAlertList = alertRepository.getServiceAlertsList();
         try {
             var toFile = new FileOutputStream(outputPath);
