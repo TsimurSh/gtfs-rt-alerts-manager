@@ -11,6 +11,9 @@ management:
       enabled: false
 
 alert-api:
+  security:
+    password: "password"
+    user: "admin1"
   ## Paths to save/read backup list
   out-path: ./app/resources/alerts.list
   in-path: ./app/resources/alerts.list
