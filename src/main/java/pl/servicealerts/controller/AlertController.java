@@ -3,6 +3,7 @@ package pl.servicealerts.controller;
 
 import com.google.transit.realtime.GtfsRealtime;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,8 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@Tag(name = "Service-alerts",
-        description = "Service-alert api allow you to provide updates whenever there is disruption on the network. Delays and cancellations of individual trips should usually be communicated using Trip updates.")
-@RequestMapping("/api")
+@SecurityRequirement(name = "basicAuth")
+@RequestMapping("/api/v1")
 public class AlertController {
 
     private final AlertService service;

@@ -9,20 +9,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-class OpenAPIConfig {
+public class OpenAPIConfig {
 
     @Bean
-    public OpenAPI myOpenAPI(OpenAPI openAPI) {
+    public OpenAPI myOpenAPI() {
         Contact contact = new Contact();
         contact.setEmail("nut.t@icloud.com");
-        contact.setName("Timur");
+        contact.setName("Timur S.");
         contact.setUrl("https://tsimursh.github.io/personal-website/");
 
         Info info = new Info();
         info.title("Service Alerts API Manager");
         info.version("1.0");
         info.contact(contact);
-        info.description("This api exposes endpoints of test services.");
+        info.description("Service-alert api allow you to provide updates whenever there is disruption on the network. " +
+                "Delays and cancellations of individual trips should usually be communicated using Trip updates.");
 
         SecurityScheme securityScheme = new SecurityScheme();
         securityScheme.setType(SecurityScheme.Type.HTTP);
@@ -31,8 +32,9 @@ class OpenAPIConfig {
 
         Components authentication = new Components().addSecuritySchemes("basicAuth", securityScheme);
 
-        openAPI.setComponents(authentication);
-        openAPI.info(info);
-        return openAPI;
+        OpenAPI openApi = new OpenAPI();
+        openApi.setComponents(authentication);
+        openApi.info(info);
+        return openApi;
     }
 }

@@ -8,12 +8,11 @@ management:
         include: "*"
   endpoint:
     shutdown:
-      enabled: false
-
+      enabled: true
 alert-api:
   security:
-    password: "password"
     user: "admin1"
+    password: "password"
   ## Paths to save/read backup list
   out-path: ./app/resources/alerts.list
   in-path: ./app/resources/alerts.list
@@ -23,7 +22,5 @@ alert-api:
   actual-filter: false
 ##open-api map paths
 springdoc:
-  api-docs:
-    path: "/docs"
   swagger-ui:
     path: "/ui"
