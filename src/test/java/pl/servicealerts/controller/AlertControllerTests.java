@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.servicealerts.model.servicealerts.ServiceAlert;
 import pl.servicealerts.service.AlertService;
@@ -26,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class AlertControllerTests {
 
@@ -37,7 +40,7 @@ public class AlertControllerTests {
     @MockBean
     private AlertService mockService;
 
-    private String baseUrl = "/api";
+    private String baseUrl = "/api/v1";
 
     @BeforeEach
     void initAlerts() {
@@ -53,8 +56,7 @@ public class AlertControllerTests {
                 .stringLengthRange(5, 6)
                 .collectionSizeRange(2, 2)
                 .ignoreRandomizationErrors(true);
-        EasyRandom generator = new EasyRandom(parameters);
-        return generator;
+        return new EasyRandom(parameters);
     }
 
     private LinkedList<ServiceAlert> alertListInit() {
@@ -77,6 +79,7 @@ public class AlertControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "password", roles = "ADMIN")
     void postNewAlertTest() throws Exception {
         mockMvc.perform(
                         post(baseUrl + "/create")
@@ -93,6 +96,7 @@ public class AlertControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "password", roles = "ADMIN")
     void getAlertsAsProtobufTest() throws Exception {
         when(mockService.getAlerts()).thenReturn(GtfsRealtime.FeedMessage.getDefaultInstance());
         mockMvc.perform(
@@ -104,6 +108,7 @@ public class AlertControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "password", roles = "ADMIN")
     void getAlertsAsJsonTest() throws Exception {
 
         mockMvc.perform(
@@ -126,6 +131,7 @@ public class AlertControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "password", roles = "ADMIN")
     void getAlertsAsJsonByAgencyTest() throws Exception {
 
         mockMvc.perform(

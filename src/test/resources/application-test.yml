@@ -1,18 +1,9 @@
 server:
   port: 8080
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
 alert-api:
   security:
-    user: "admin1"
-    password: "password"
+    user: "test"
+    password: "test"
   ## Paths to save/read backup list
   out-path: ./app/resources/alerts.list
   in-path: ./app/resources/alerts.list
@@ -20,7 +11,8 @@ alert-api:
   zone: "Europe/Warsaw"
   ## Enable filter out old alerts
   actual-filter: false
-##open-api map paths
 springdoc:
   swagger-ui:
-    path: "/ui"
+    enabled: false
+  api-docs:
+    enabled: false
